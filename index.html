@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KadaSnap | The Ultimate DIY Web Photobooth</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #f8f9fa;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .text-warning {
+            color: #ffc107 !important;
+        }
+        .bg-gradient-dark {
+            background: linear-gradient(135deg, #1a1d20 0%, #080808 100%);
+        }
+        /* Mobile First Padding */
+        .hero-section {
+            padding: 60px 0 40px;
+            border-bottom: 1px solid #333;
+        }
+        @media (min-width: 768px) {
+            .hero-section {
+                padding: 100px 0 80px;
+            }
+        }
+        .feature-card {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffc107;
+        }
+        /* Pricing Card Styling */
+        .pricing-card {
+            background-color: #1e1e1e;
+            border: 2px solid #333;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .pricing-card.day-pass {
+            border-color: #ffc107;
+            box-shadow: 0 0 30px rgba(255, 193, 7, 0.15);
+            transform: scale(1.02);
+            z-index: 2;
+        }
+        .pricing-card.day-pass:hover {
+            box-shadow: 0 0 40px rgba(255, 193, 7, 0.3);
+            transform: scale(1.04);
+        }
+        .popular-badge {
+            background-color: #ffc107;
+            color: #000;
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            text-align: center;
+            padding: 8px 0;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        /* Table enhancements for mobile */
+        .table-responsive {
+            -webkit-overflow-scrolling: touch;
+        }
+        .vs-table {
+            background-color: #1e1e1e;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #333;
+            min-width: 600px; /* Forces horizontal scroll on mobile to prevent squishing */
+        }
+        .vs-table th, .vs-table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-color: #333;
+            font-size: 1rem;
+        }
+        @media (min-width: 768px) {
+            .vs-table th, .vs-table td {
+                padding: 1.5rem;
+                font-size: 1.15rem;
+            }
+        }
+        .vs-kadasnap {
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+        .icon-lg {
+            width: 48px;
+            height: 48px;
+            color: #ffc107;
+            margin-bottom: 1rem;
+        }
+        .price-anchor {
+            text-decoration: line-through;
+            color: #6c757d;
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        .savings-pill {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .roi-pill {
+            background: rgba(13, 202, 240, 0.15);
+            color: #0dcaf0;
+            border: 1px solid #0dcaf0;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .pro-pass {
+            border-color: #495057;
+            transition: all 0.3s ease;
+        }
+        .pro-pass:hover {
+            border-color: #0dcaf0;
+            box-shadow: 0 0 30px rgba(13, 202, 240, 0.15);
+        }
+        .competitor-card {
+            border-color: #333;
+            background-color: #151515 !important;
+            opacity: 0.75;
+            transition: all 0.3s ease;
+            filter: grayscale(0.5);
+        }
+        .competitor-card:hover {
+            opacity: 1;
+            filter: grayscale(0);
+        }
+        .trial-banner {
+            background: linear-gradient(135deg, #1a1d20 0%, #111 100%);
+            border: 1px solid #333;
+            border-radius: 16px;
+            position: relative;
+        }
+        .trial-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, rgba(255, 193, 7, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        @media (min-width: 992px) {
+            .pricing-card.day-pass {
+                transform: scale(1.08);
+            }
+            .pricing-card.day-pass:hover {
+                transform: scale(1.1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-warning d-flex align-items-center gap-2" href="#">
+                <i data-lucide="camera"></i> KadaSnap
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#compare">Why DIY?</a></li>
+                    <li class="nav-item"><a class="nav-link text-warning fw-bold" href="#pricing">Pricing</a></li>
+                    <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
+                        <a href="mailto:kadasnap@gmail.com" class="btn btn-outline-warning">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section bg-gradient-dark text-center">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-9 px-4 px-md-3">
+                    <h1 class="display-4 fw-bold mb-3 mb-md-4">Why Rent a Photobooth When You Can <span class="text-warning">DIY for ₱699?</span></h1>
+                    <p class="lead text-white-50 mb-4 mb-md-5 px-lg-5 fs-6 fs-md-5">
+                        Stop paying ₱5,000+ for 2-hour rentals. Turn your own laptop and webcam into a premium photobooth instantly. Zero heavy downloads. Perfect for birthdays, weddings, and side-hustle starters.
+                    </p>
+                    <div class="d-flex gap-3 justify-content-center flex-column flex-sm-row">
+                        <a href="#pricing" class="btn btn-warning btn-lg fw-bold px-4 px-md-5 py-3 shadow w-100 w-sm-auto">Get Your Day Pass</a>
+                        <a href="mailto:kadasnap@gmail.com?subject=I want to claim my 3-Hour Free Trial" class="btn btn-outline-light btn-lg fw-bold px-4 px-md-5 py-3 d-flex align-items-center justify-content-center gap-2 w-100 w-sm-auto">
+                            <i data-lucide="clock"></i> Try it Free for 3 Hours
+                        </a>
+                    </div>
+                    <p class="mt-4 text-white-50 small"><i data-lucide="shield-check" class="d-inline-block align-middle me-1" style="width:16px;"></i> No subscriptions required. Just pay for the days you need.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Cost Comparison (Price Anchoring) -->
+    <section id="compare" class="py-5 border-bottom border-secondary">
+        <div class="container py-4 py-md-5">
+            <div class="text-center mb-4 mb-md-5">
+                <h2 class="display-6 fw-bold">The Math Makes Sense.</h2>
+                <p class="text-white-50 fs-6 fs-md-5 px-3">Renting a booth limits your time and drains your budget. KadaSnap gives you control.</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="d-md-none text-center text-warning small mb-3 animate-pulse">
+                        <i data-lucide="move-horizontal" class="d-inline-block align-middle me-1"></i> Swipe table to view full comparison
+                    </div>
+                    <div class="table-responsive shadow-lg rounded-4">
+                        <table class="table table-dark vs-table text-center mb-0">
+                            <thead>
+                                <tr class="border-bottom border-secondary text-white-50">
+                                    <th class="text-start" style="width: 30%;"></th>
+                                    <th style="width: 35%;">Traditional Rental</th>
+                                    <th class="vs-kadasnap text-warning fw-bold fs-4 fs-md-3" style="width: 35%;">KadaSnap DIY</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-start fw-bold text-white-50">Average Cost</td>
+                                    <td>₱4,500 - ₱6,000+</td>
+                                    <td class="vs-kadasnap fw-bold text-warning fs-4">₱699</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start fw-bold text-white-50">Operating Time</td>
+                                    <td>Strictly 2 to 3 Hours</td>
+                                    <td class="vs-kadasnap fw-bold text-white">Full 24 Hours</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start fw-bold text-white-50">Setup Privacy</td>
+                                    <td>Strangers manning the booth</td>
+                                    <td class="vs-kadasnap fw-bold text-white">Just you and the Barkada</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start fw-bold text-white-50">Digital Copies</td>
+                                    <td>Wait 3-5 days for Google Drive</td>
+                                    <td class="vs-kadasnap fw-bold text-white">Instant QR Code Download</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Functionality / Features Section -->
+    <section id="features" class="py-5 bg-gradient-dark">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Everything You Need, Built-In.</h2>
+                <p class="text-white-50 fs-5">Run a 5-star booth straight from your Google Chrome browser.</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card p-4 h-100 text-center">
+                        <i data-lucide="monitor-play" class="icon-lg"></i>
+                        <h4 class="fw-bold mb-3">Runs on Any Browser</h4>
+                        <p class="text-white-50">No massive software downloads, no forced iPad purchases. Just plug any webcam into your Windows or Mac laptop and go.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4 h-100 text-center">
+                        <i data-lucide="qr-code" class="icon-lg"></i>
+                        <h4 class="fw-bold mb-3">Instant QR Sharing</h4>
+                        <p class="text-white-50">No printer? No problem. Display a static QR code so guests can instantly grab their digital photo strips straight to their phones.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4 h-100 text-center">
+                        <i data-lucide="layout-template" class="icon-lg"></i>
+                        <h4 class="fw-bold mb-3">Custom Filters & Strips</h4>
+                        <p class="text-white-50">Instantly switch between 2x6 strips or landscape 4x6 prints. Add your event's name or logo on every single photo automatically.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 offset-md-2">
+                    <div class="feature-card p-4 h-100 text-center">
+                        <i data-lucide="wifi-off" class="icon-lg"></i>
+                        <h4 class="fw-bold mb-3">Works 100% Offline</h4>
+                        <p class="text-white-50">Venue Wi-Fi is down? KadaSnap still runs perfectly and saves every high-res photo directly to your laptop's local hard drive.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card p-4 h-100 text-center">
+                        <i data-lucide="printer" class="icon-lg"></i>
+                        <h4 class="fw-bold mb-3">One-Click Printing</h4>
+                        <p class="text-white-50">Have a Canon Selphy or an Epson printer? KadaSnap formats your photos perfectly so you can print natively from your browser.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section (The core highlight) -->
+    <section id="pricing" class="py-5 mb-5">
+        <div class="container py-4 py-md-5">
+            <div class="text-center mb-4 mb-md-5">
+                <h2 class="display-5 fw-bold">Simple, Honest Pricing.</h2>
+                <p class="text-white-50 fs-6 fs-md-5 mb-2 px-3">No hardware lock-ins. No hidden fees. Cancel anytime.</p>
+            </div>
+
+            <div class="row justify-content-center g-4 mx-auto align-items-center mb-5" style="max-width: 1200px;">
+                
+                <!-- Competitor Apps (The Bad Choice) -->
+                <div class="col-lg-4 col-md-6 d-none d-md-block">
+                    <div class="pricing-card competitor-card p-4 p-md-5 h-100 d-flex flex-column">
+                        <div class="mt-2 mt-md-4 mb-2 d-flex justify-content-between align-items-center">
+                            <h3 class="fw-bold mb-0 text-secondary fs-4 fs-md-3">Other Apps</h3>
+                        </div>
+                        <p class="text-secondary mb-4">LumaBooth, DSLRBooth, etc.</p>
+                        
+                        <div class="mb-4 mt-2">
+                            <span class="display-5 fw-bold text-secondary">₱1,200+</span>
+                            <span class="text-secondary">/ month</span>
+                        </div>
+                        
+                        <ul class="list-unstyled mb-5 flex-grow-1">
+                            <li class="mb-3 d-flex align-items-start gap-3">
+                                <i data-lucide="x-circle" class="text-danger mt-1"></i> 
+                                <div>
+                                    <strong class="text-secondary">No Day Pass</strong>
+                                    <div class="text-secondary small">Forced into monthly subscriptions.</div>
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex align-items-start gap-3">
+                                <i data-lucide="x-circle" class="text-danger mt-1"></i> 
+                                <div>
+                                    <strong class="text-secondary">Expensive Hardware</strong>
+                                    <div class="text-secondary small">Requires a ₱50k Apple iPad to run.</div>
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex align-items-start gap-3">
+                                <i data-lucide="x-circle" class="text-danger mt-1"></i> 
+                                <div>
+                                    <strong class="text-secondary">Huge Downloads</strong>
+                                    <div class="text-secondary small">Heavy apps that drain storage.</div>
+                                </div>
+                            </li>
+                        </ul>
+                        <button class="btn btn-outline-secondary w-100 py-3 fw-bold mt-auto disabled" style="border-style: dashed;">Too Restrictive</button>
+                    </div>
+                </div>
+
+                <!-- Day Pass (HIGHLIGHTED) -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="pricing-card day-pass p-4 p-md-5 h-100 d-flex flex-column bg-dark">
+                        <div class="popular-badge">🏆 Best Value For DIY Parties</div>
+                        <div class="mt-4 mb-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <h3 class="fw-bold mb-0 text-warning fs-4 fs-md-3">DIY Day Pass</h3>
+                            <span class="savings-pill">Save ₱4,000+</span>
+                        </div>
+                        <p class="text-white-50 mb-4 small md-fs-6">Why rent? Perfect for birthdays, weddings, & reunions.</p>
+                        
+                        <div class="mb-4">
+                            <span class="price-anchor fs-5 fs-md-4" title="Cost of physical rental">₱4,500</span><br>
+                            <span class="display-4 fw-bold text-white">₱699</span>
+                            <span class="text-white-50 small">/ 24 hours</span>
+                        </div>
+                        <p class="text-white-50 mb-4">Why rent? Perfect for birthdays, weddings, & reunions.</p>
+                        
+                        <div class="mb-4">
+                            <span class="price-anchor" title="Cost of physical rental">₱4,500</span><br>
+                            <span class="display-3 fw-bold text-white">₱699</span>
+                            <span class="text-white-50">/ 24 hours</span>
+                        </div>
+                        
+                        <ul class="list-unstyled mb-5 flex-grow-1">
+                            <li class="mb-3 d-flex align-items-start gap-3">
+                                <i data-lucide="check-circle-2" class="text-warning mt-1"></i> 
+                                <div>
+                                    <strong class="text-white">Full 24-Hour Access</strong>
+                                    <div class="text-white-50 small">Party all night, not just 2 hours.</div>
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex align-items-start gap-3">
+                                <i data-lucide="check-circle-2" class="text-warning mt-1"></i> 
+                                <div>
+                                    <strong class="text-white">Unlimited Photos & Downloads</strong>
+                                    <div class="text-white-50 small">Take as many snaps as you want.</div>
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex align-items-start gap-3">
+                                <i data-lucide="check-circle-2" class="text-warning mt-1"></i> 
+                                <div>
+                                    <strong class="text-white">No Subscription Traps</strong>
+                                    <div class="text-white-50 small">One-time payment. Zero commitment.</div>
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex align-items-center gap-3">
+                                <i data-lucide="check-circle-2" class="text-warning"></i> 
+                                <span class="text-white">All Custom Layouts & Overlays</span>
+                            </li>
+                        </ul>
+                        <button class="btn btn-warning btn-lg w-100 py-3 fw-bold mt-auto text-dark shadow-sm" onclick="window.location.href='mailto:kadasnap@gmail.com?subject=I want to buy the DIY Day Pass for ₱699'">Email to Buy Day Pass</button>
+                    </div>
+                </div>
+
+                <!-- Pro Pass -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="pricing-card pro-pass p-4 p-md-5 h-100 d-flex flex-column bg-dark">
+                        <div class="mt-2 mt-md-4 mb-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <h3 class="fw-bold mb-0 text-white fs-4 fs-md-3">Pro Coordinator</h3>
+                            <span class="roi-pill">1 Booking = ROI</span>
+                        </div>
+                        <p class="text-white-50 mb-4 small md-fs-6">Start a photobooth business or upsell your clients.</p>
+                        
+                        <div class="mb-4 mt-2">
+                            <span class="display-5 fw-bold text-white">₱1,299</span>
+                            <span class="text-white-50 small">/ month</span>
+                        </div>
+                        <p class="text-white-50 mb-4">Start a photobooth business or upsell your clients.</p>
+                        
+                        <div class="mb-4 mt-2">
+                            <span class="display-4 fw-bold text-white">₱1,299</span>
+                            <span class="text-white-50">/ month</span>
+                        </div>
+                        
+                        <ul class="list-unstyled mb-5 flex-grow-1">
+                            <li class="mb-3 d-flex align-items-start gap-3">
+                                <i data-lucide="briefcase" class="text-info mt-1"></i> 
+                                <div>
+                                    <strong class="text-white">Unlimited Events</strong>
+                                    <div class="text-white-50 small">Run 30 events a month? Still ₱1,299.</div>
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex align-items-start gap-3">
+                                <i data-lucide="fingerprint" class="text-info mt-1"></i> 
+                                <div>
+                                    <strong class="text-white">100% White-Label</strong>
+                                    <div class="text-white-50 small">Remove our logo. Build your own brand.</div>
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex align-items-start gap-3">
+                                <i data-lucide="shield-check" class="text-info mt-1"></i> 
+                                <div>
+                                    <strong class="text-white">Bulletproof Dual-Backup</strong>
+                                    <div class="text-white-50 small">Never lose a client's photo, even offline.</div>
+                                </div>
+                            </li>
+                            <li class="mb-3 d-flex align-items-center gap-3">
+                                <i data-lucide="printer" class="text-info"></i> 
+                                <span class="text-white">Pro Printer Support (DNP, Selphy)</span>
+                            </li>
+                        </ul>
+                        <button class="btn btn-outline-info btn-lg w-100 py-3 fw-bold mt-auto" onclick="window.location.href='mailto:kadasnap@gmail.com?subject=I am interested in the Pro Coordinator Plan'">Email to Subscribe</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Free Trial Callout Banner -->
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="trial-banner p-4 p-md-5 text-center overflow-hidden">
+                        <div class="trial-glow"></div>
+                        <div class="position-relative" style="z-index: 1;">
+                            <div class="d-inline-flex align-items-center justify-content-center bg-dark border border-secondary rounded-circle mb-3" style="width: 64px; height: 64px;">
+                                <i data-lucide="laptop" class="text-warning" style="width: 32px; height: 32px;"></i>
+                            </div>
+                            <h3 class="fw-bold mb-3">Not sure if your laptop or printer is compatible?</h3>
+                            <p class="text-white-50 fs-5 mb-4 mx-auto" style="max-width: 700px;">
+                                We get it. You want to make sure everything works perfectly before your event. <strong>Try KadaSnap for 3 hours, completely free.</strong> Test the filters, setup your webcam, and run a few test prints on us!
+                            </p>
+                            <a href="mailto:kadasnap@gmail.com?subject=I want to claim my 3-Hour Free Trial" class="btn btn-outline-warning btn-lg fw-bold px-5 rounded-pill shadow-sm">
+                                Claim Your 3-Hour Free Trial
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-5 border-top border-secondary text-center">
+        <div class="container py-4">
+            <h2 class="fw-bold mb-4">Turn your next party into a core memory.</h2>
+            <a href="#pricing" class="btn btn-warning btn-lg fw-bold px-5 py-3 mb-5 shadow">Get Started for ₱699</a>
+            
+            <div class="text-white-50 small mt-4 pt-4 border-top border-secondary">
+                <p>&copy; 2026 KadaSnap. Built for the Barkada. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
